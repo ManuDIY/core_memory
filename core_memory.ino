@@ -1,19 +1,17 @@
 #include "core_driver.cpp"
 
-// control pin config
-int serial_data = 11;
-int output_enable = 10; //active low
-int serial_refresh = 9;
-int serial_clock = 8;
-int master_reset = 7; //active low
 
-
-
-void write_data(unsigned char data)
-{
-  write_data_8(data);
-}
-
+bool values[8][8] = 
+  {
+  {1, 1, 1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 1, 1, 1, 1}
+  };
 
 void setup()
 {
@@ -29,25 +27,33 @@ void setup()
   
   // set default pin states
   digitalWrite(DS, LOW);
-  digitalWrite(OE, LOW);
+  digitalWrite(OE, HIGH);
   digitalWrite(ST_CP, LOW);
   digitalWrite(SH_CP, LOW);
   digitalWrite(MR, HIGH);
 }
 
 
-unsigned long int a = 1;
+
+//unsigned long int a = 1;
+bool a = 1;
 void loop()
 { 
-  write_data((char) (a));
-  write_data((char) (a >> 8));
-  write_data((char) (a >> 16));
-  write_data((char) (a >> 24));
-  pulse_out();
-//  digitalWrite(ST_CP, HIGH);
-//  delay(250);
-//  digitalWrite(ST_CP, LOW);
-//  delay(250);
-  a = a == 0 ? 1 : a << 1;
+    write_core_array(values);
+    for(int i = 0; i < 8; i++)
+    {
+      for(int j = 0; j < 8; j++)
+      {
+        values[i][j] = !values[i][j];
+      }
+    }
+    write_core_array(values);
+    for(int i = 0; i < 8; i++)
+    {
+      for(int j = 0; j < 8; j++)
+      {
+        values[i][j] = !values[i][j];
+      }
+    }
 }
 
